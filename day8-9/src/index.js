@@ -8,30 +8,73 @@ const FINISHED_LS = "finished";
 
 let toDos = [];
 let finishedToDos = [];
-let idIndex = 0;
-let FidIndex = 0;
 
 function paintToDo(text) {
   const li = document.createElement("li");
   const delBtn = document.createElement("button");
   const checkBtn = document.createElement("button");
   const span = document.createElement("span");
+  const newId = toDos.length + 1;
   delBtn.innerText = "❌";
   delBtn.addEventListener("click", deleteTodo);
   checkBtn.innerText = "✅";
-  checkBtn.addEventListener("click", finishTodo);
+  checkBtn.addEventListener("click", throwToFinish);
   span.innerText = text;
-  li.id = ++idIndex;
+  li.id = newId;
   li.appendChild(span);
   li.appendChild(delBtn);
   li.appendChild(checkBtn);
   pending.appendChild(li);
-  toDoObj = {
+  const toDoObj = {
     text: text,
-    id: idIndex,
+    id: newId,
   };
   toDos.push(toDoObj);
   saveTodo();
+}
+
+function finishTodo(text) {
+  const li = document.createElement("li");
+  const delBtn = document.createElement("button");
+  const checkBtn = document.createElement("button");
+  const span = document.createElement("span");
+  const newId = finishedToDos.length + 1;
+  delBtn.innerText = "❌";
+  delBtn.addEventListener("click", deleteFinished);
+  checkBtn.innerText = "🔼";
+  checkBtn.addEventListener("click", backTodo);
+  span.innerText = text;
+  li.id = newId;
+  li.appendChild(span);
+  li.appendChild(delBtn);
+  li.appendChild(checkBtn);
+  finished.appendChild(li);
+  const toDoObj = {
+    text: text,
+    id: newId,
+  };
+  finishedToDos.push(toDoObj);
+  finishedTodo();
+}
+
+function throwToFinish(event) {
+  const checkLi = event.target.parentNode;
+  finished.appendChild(checkLi);
+  const toDoID = checkLi.id;
+  const cleanToDos = toDos.filter(function (toDo) {
+    return toDo.id !== parseInt(toDoID);
+  });
+  toDos = cleanToDos;
+  saveTodo();
+
+  checkLi.querySelectorAll("button")[1].innerText = "🔼";
+  const text = checkLi.querySelector("span").innerText;
+  const toDoObj = {
+    text: text,
+    id: finishedToDos.lenght + 1,
+  };
+  finishedToDos.push(toDoObj);
+  finishedTodo();
 }
 
 function saveTodo() {
@@ -42,39 +85,45 @@ function finishedTodo(event) {
   localStorage.setItem(FINISHED_LS, JSON.stringify(finishedToDos));
 }
 
-function loadTodo() {
-  const loadedToDo = localStorage.getItem(PENDING_LS);
-  if (loadedToDo !== null) {
-    const parsedToDo = JSON.parse(loadedToDo);
-    parsedToDo.forEach(function (toDo) {
+function loadPending() {
+  const loadedPending = localStorage.getItem(PENDING_LS);
+  if (loadedPending !== null) {
+    const parsedPending = JSON.parse(loadedPending);
+    parsedPending.forEach(function (toDo) {
       paintToDo(toDo.text);
     });
   }
 }
 
-function backTodo(event) {}
+function loadFinished() {
+  const loadedFinish = localStorage.getItem(FINISHED_LS);
+  if (loadedFinish !== null) {
+    const parsedFinish = JSON.parse(loadedFinish);
+    parsedFinish.forEach(function (toDo) {
+      finishTodo(toDo.text);
+    });
+  }
+}
 
-function finishTodo(text) {
-  const li = document.createElement("li");
-  const delBtn = document.createElement("button");
-  const checkBtn = document.createElement("button");
-  const span = document.createElement("span");
-  delBtn.innerText = "❌";
-  delBtn.addEventListener("click", deleteTodo);
-  checkBtn.innerText = "🔼";
-  checkBtn.addEventListener("click", backTodo);
-  span.innerText = text;
-  li.id = ++FidIndex;
-  li.appendChild(span);
-  li.appendChild(delBtn);
-  li.appendChild(checkBtn);
-  pending.appendChild(li);
-  toDoObj = {
-    text: text,
-    id: FidIndex,
-  };
-  finishedToDos.push(toDoObj);
+function backTodo(event) {
+  const checkLi = event.target.parentNode;
+  console.log(checkLi);
+  pending.appendChild(checkLi);
+  const toDoID = checkLi.id;
+  const cleanToDos = finishedToDos.filter(function (toDo) {
+    return toDo.id !== parseInt(toDoID);
+  });
+  finishedToDos = cleanToDos;
   finishedTodo();
+
+  checkLi.querySelectorAll("button")[1].innerText = "✅";
+  const text = checkLi.querySelector("span").innerText;
+  const toDoObj = {
+    text: text,
+    id: toDos.length + 1,
+  };
+  toDos.push(toDoObj);
+  saveTodo();
 }
 
 function deleteTodo(event) {
@@ -84,9 +133,19 @@ function deleteTodo(event) {
   const cleanToDos = toDos.filter(function (toDo) {
     return toDo.id !== parseInt(li.id);
   });
-  console.log(cleanToDos);
   toDos = cleanToDos;
   saveTodo();
+}
+
+function deleteFinished(event) {
+  const btn = event.target;
+  const li = btn.parentNode;
+  finished.removeChild(li);
+  const cleanToDos = finishedToDos.filter(function (toDo) {
+    return toDo.id !== parseInt(li.id);
+  });
+  finishedToDos = cleanToDos;
+  finishedTodo();
 }
 
 function handleSubmit(event) {
@@ -97,7 +156,8 @@ function handleSubmit(event) {
 }
 
 function init() {
-  loadTodo();
+  loadPending();
+  loadFinished();
   form.addEventListener("submit", handleSubmit);
 }
 
