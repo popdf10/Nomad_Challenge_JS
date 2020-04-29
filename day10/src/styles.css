@@ -1,0 +1,15 @@
+body {
+  font-family: sans-serif;
+}
+
+.value__head {
+  display: flex;
+}
+
+.chose {
+  display: none;
+}
+
+.showing {
+  display: flex;
+}

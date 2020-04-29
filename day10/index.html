@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Nomad Day10 Chellange</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+
+  <body>
+    <div class="value__head">
+      <h2>Generate a number between 0 and&nbsp;</h2>
+      <h2 id="jsValue">0</h2>
+    </div>
+    <input
+      type="range"
+      id="jsRange"
+      min="0"
+      max="200"
+      value="0"
+      step="5"
+      name="points"
+      list="tickmarks"
+    />
+
+    <datalist id="tickmarks">
+      <option value=""></option>
+      <option value="50"></option>
+      <option value="100"></option>
+      <option value="150"></option>
+      <option value="200"></option>
+    </datalist>
+
+    <div class="guess">
+      Guess the number:
+      <input type="text" id="guess__number" />
+      <button type="submit" id="guess__button">play!</button>
+    </div>
+    <div class="chose">
+      <div>You chose:&nbsp;</div>
+      <div id="chose__number"></div>
+      <div>, the machine chose:&nbsp;</div>
+      <div id="chose__random"></div>
+    </div>
+    <strong><div id="result"></div></strong>
+    <script src="src/index.js"></script>
+  </body>
+</html>
