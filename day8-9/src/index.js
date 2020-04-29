@@ -19,7 +19,7 @@ function paintToDo(text) {
   delBtn.innerText = "❌";
   delBtn.addEventListener("click", deleteTodo);
   checkBtn.innerText = "✅";
-  checkBtn.addEventListener("click", finishTodo);
+  checkBtn.addEventListener("click", finishTodo, li.id);
   span.innerText = text;
   li.id = ++idIndex;
   li.appendChild(span);
@@ -54,7 +54,7 @@ function loadTodo() {
 
 function backTodo(event) {}
 
-function finishTodo(text) {
+function finishTodo(event) {
   const li = document.createElement("li");
   const delBtn = document.createElement("button");
   const checkBtn = document.createElement("button");
@@ -68,7 +68,7 @@ function finishTodo(text) {
   li.appendChild(span);
   li.appendChild(delBtn);
   li.appendChild(checkBtn);
-  pending.appendChild(li);
+  finished.appendChild(li);
   toDoObj = {
     text: text,
     id: FidIndex,
