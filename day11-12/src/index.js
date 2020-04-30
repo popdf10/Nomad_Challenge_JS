@@ -18,12 +18,31 @@ function handleNumberClick(event) {
 function handleOperate(event) {
   op = event.target.innerText;
   console.log(op);
+  if (num && tempNum !== "") {
+    const result = switchOpertor();
+    input.innerText = result;
+    tempNum = result;
+    num = "";
+    return;
+  }
   tempNum = num;
   tempNum = parseInt(tempNum);
   num = "";
 }
 
 function handleEqual(event) {
+  const result = switchOpertor();
+  input.innerText = result;
+  tempNum = result;
+}
+
+function handleReset(event) {
+  num = "";
+  tempNum = "";
+  input.innerText = 0;
+}
+
+function switchOpertor() {
   let result;
   switch (op) {
     case "+":
@@ -39,15 +58,7 @@ function handleEqual(event) {
       result = tempNum / num;
       break;
   }
-  input.innerText = result;
-  num = result;
-  tempNum = "";
-}
-
-function handleReset(event) {
-  num = "";
-  tempNum = "";
-  input.innerText = 0;
+  return result;
 }
 
 function init() {
